@@ -114,6 +114,7 @@ meucluster(29)
 meucluster(41)
 
 meucluster(45)
+meucluster(c(41,45))
 
 meucluster(44)
 
