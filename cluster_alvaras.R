@@ -30,12 +30,14 @@ x2 <- x2[sample(nrow(x2), 3000), ]
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
-apres <- apcluster(negDistMat(r=2), x2)
+apres <- apcluster(negDistMat(r=2), x2, q=0.6)
 plot(apres, x2)
- #save(apres, file = "apres.rda")
+summary(apres)
+
+#save(apres, file = "apres.rda")
 #load(file = "apres.rda")
 #plot(apres, x2)
-summary(apres)
+
 
 predict.apcluster <- function(s, exemplars, newdata)
 {
@@ -43,16 +45,11 @@ predict.apcluster <- function(s, exemplars, newdata)
   unname(apply(simMat, 2, which.max))
 }
 resultado <- list()
-#resul <- predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ], x1[1:1000,])
 resul <- predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ], x1[1:1000,])
 length(resul)
 head(resul)
 teste <- as.data.frame(resul)
 dim(teste)
-#final <- cbind(x1, teste)
-#head(final,25)
-#dim(x1)
-
 
 #dadosteste = dados[1:1000, 1:2]
 #head(dadosteste)
@@ -131,7 +128,7 @@ meucluster(c(39,42,50))
 a = 0
 meucluster((a=a+1))
 
-
+df2 = data.frame()
 meucluster <- function(cluster) {
   tamanho = length(unique(cluster))
   df2 = data.frame(color = topo.colors(tamanho, alpha = NULL), stringsAsFactors = FALSE)
@@ -144,8 +141,18 @@ meucluster <- function(cluster) {
 }
 
 
+cluster = c(1:3)
 
-
+tamanho = length(unique(cluster))
+tamanho
+df2 = data.frame(color = topo.colors(tamanho, alpha = NULL), stringsAsFactors = FALSE)
+df2
+dadosc = dados[dados$cluster == cluster,]
+leaflet(dadosc) %>%
+  addTiles(group="OSM") %>% 
+  addCircles(~V1, ~V2, weight = 0.1, radius=10, color=c('red', 'blue', 'green'),
+             stroke = TRUE, fillOpacity = 0.8) %>% 
+  addLegend("bottomright", colors= "red", labels="Porto Alegre", title="Clusters")
 
 
 
