@@ -1,12 +1,12 @@
 rm(list = ls(all.names = TRUE))
 library(leaflet.extras)
 library(apcluster)
-setwd("/Users/fsmoura/Documents/R-files/AffinityPropagationClustering/")
-filenames <- list.files(path = "/Users/fsmoura/Documents/R-files/AffinityPropagationClustering/geo/") 
+setwd("~/r-files/AffinityPropagationClustering/")
+filenames <- list.files(path = "~/r-files/AffinityPropagationClustering/geo/") 
 filenames
-setwd("/Users/fsmoura/Documents/R-files/AffinityPropagationClustering/geo/") 
+setwd("~/r-files/AffinityPropagationClustering/geo/") 
 data <- do.call("rbind", lapply(filenames, read.csv, header = TRUE, sep = ";")) 
-setwd("/Users/fsmoura/Documents/R-files/AffinityPropagationClustering/")
+setwd("~/r-files/AffinityPropagationClustering/")
 head(data)
 names(data)
 dados <- cbind(data$long, data$lat, data$default, data$tipo)
@@ -26,15 +26,15 @@ x2 <- x2[complete.cases(x2), ]
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 3000), ]
+x2 <- x2[sample(nrow(x2), 5000), ]
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
-apres <- apcluster(negDistMat(r=2), x2, q=0.6)
+apres <- apcluster(negDistMat(r=2), x2, q=0.7)
 plot(apres, x2)
 summary(apres)
 
-#save(apres, file = "apres.rda")
+save(apres, file = "apres2.rda")
 #load(file = "apres.rda")
 #plot(apres, x2)
 
@@ -90,9 +90,11 @@ meucluster <- function(cluster) {
     addTiles(group="OSM") %>% 
     addCircles(~V1, ~V2, weight = 0.1, radius=8, color= 'blue',
                stroke = TRUE, fillOpacity = 0.8) %>% 
-    addLegend("topright", colors= "blue", labels=paste("com", tamanho, "alvarás", sep = " "), title="Cluster")
+    addLegend("topright", colors= "blue", labels=paste("com", tamanho, "alvar?s", sep = " "), title="Cluster")
 }
 
+save(dados, file = "clusters_q07_94clusters.rda")
+write.csv(dados, "clusters_q07_94clusters.csv", row.names=FALSE)
 meucluster(1)
 
 meucluster(5)
@@ -159,9 +161,18 @@ leaflet(dadosc) %>%
 
 
 
-
-
-
+load(file = "apres.rda")
+dados = read.csv('clusters_q07_94clusters.csv', header = TRUE, sep = ",")
+head(dados)
+x2 <- cbind(dados$V1, dados$V2)
+x2 <- x2[complete.cases(x2), ]
+head(x2)
+#x1 <- x2[1:5000,]
+x1 <- x2
+x2 <- x2[sample(nrow(x2), 5000), ]
+dim(x1)
+dim(x2)
+plot(apres, x1)
 
 ###################
 ###################
