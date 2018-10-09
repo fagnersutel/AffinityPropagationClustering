@@ -1,19 +1,12 @@
 rm(list = ls(all.names = TRUE))
-#library(ggplot2)
-#library(ggthemes)
-#devtools::install_github("sjmgarnier/viridis")
-#library(viridis) 
-#library(scales)
-#library(grid)
-#library(dplyr)
-#library(gridExtra)
-#library(leaflet.extras)
+
 library(apcluster)
 setwd("/Users/fagnersuteldemoura/r-files/aae/")
 filenames <- list.files(path = "/Users/fagnersuteldemoura/r-files/aae/geo/") 
 filenames
 setwd("/Users/fagnersuteldemoura/r-files/aae/geo/") 
 data <- do.call("rbind", lapply(filenames, read.csv, header = TRUE, sep = ";")) 
+setwd("/Users/fagnersuteldemoura/r-files/aae/")
 head(data)
 names(data)
 dados <- cbind(data$long, data$lat, data$default, data$tipo)
@@ -65,7 +58,7 @@ x2 <- x2[complete.cases(x2), ]
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 5000), ]
+x2 <- x2[sample(nrow(x2), 3000), ]
 dim(x1)
 dim(x2)
 plot(x2, xlab="", ylab="", pch=19, cex=0.2)
@@ -89,14 +82,20 @@ plot(apres2a, x2)
 
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
 apres <- apcluster(negDistMat(r=2), x2)
-
+save(apres, file = "apres.rda")
+load(file = "apres.rda")
+plot(apres, x2)
+summary(apres)
+View(apres)
 ## auxiliary predict() function
 predict.apcluster <- function(s, exemplars, newdata)
 {
   simMat <- s(rbind(exemplars, newdata), sel=(1:nrow(newdata)) + nrow(exemplars))[1:nrow(exemplars), ]
   unname(apply(simMat, 2, which.max))
 }
+#resul <- predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ], x1[1:1000,])
 resul <- predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ], x1[1:1000,])
+dim(resul)
 length(resul)
 head(resul)
 teste <- as.data.frame(resul)
@@ -107,7 +106,7 @@ dim(x1)
 x3 <- x1[1:5000,]
 x3 <- as.data.frame(x3)
 dim(x3)
-
+head(x3)
 resultado <- list()
 for (posicao in x3){
   resultado = predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ], x3[posicao,])
