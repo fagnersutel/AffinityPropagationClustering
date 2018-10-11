@@ -9,7 +9,7 @@ data <- do.call("rbind", lapply(filenames, read.csv, header = TRUE, sep = ";"))
 setwd("~/r-files/AffinityPropagationClustering/")
 head(data)
 names(data)
-dados <- cbind(data$long, data$lat, data$default, data$tipo)
+dados <- cbind(data$long, data$lat, as.character(data$default), as.character(data$tipo))
 dados <- as.data.frame(dados)
 dados$V1 <- as.numeric(as.character(dados$V1))
 dados$V2 <- as.numeric(as.character(dados$V2))
@@ -26,11 +26,11 @@ x2 <- x2[complete.cases(x2), ]
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 5000), ]
+x2 <- x2[sample(nrow(x2), 3000), ]
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
-apres <- apcluster(negDistMat(r=2), x2, q=0.7)
+apres <- apcluster(negDistMat(r=2), x2)
 plot(apres, x2)
 summary(apres)
 
@@ -51,14 +51,6 @@ head(resul)
 teste <- as.data.frame(resul)
 dim(teste)
 
-#dadosteste = dados[1:1000, 1:2]
-#head(dadosteste)
-#dados$cluster = 0
-#head(dados)
-
-#for (posicao in dadosteste){
-#  dados$cluster[posicao] = predict.apcluster(negDistMat(r=2), x2[apres@exemplars, ],  dadosteste[posicao, 1:2])
-#}
 dados$cluster = 0
 head(dados)
 tail(dados)
@@ -90,11 +82,26 @@ meucluster <- function(cluster) {
     addTiles(group="OSM") %>% 
     addCircles(~V1, ~V2, weight = 0.1, radius=8, color= 'blue',
                stroke = TRUE, fillOpacity = 0.8) %>% 
-    addLegend("topright", colors= "blue", labels=paste("com", tamanho, "alvar?s", sep = " "), title="Cluster")
+    addLegend("topright", colors= "blue", labels=paste("Cluster:", cluster, ", com", tamanho, "alvarás", sep = " "), title="Cluster")
 }
 
 save(dados, file = "clusters_q07_94clusters.rda")
 write.csv(dados, "clusters_q07_94clusters.csv", row.names=FALSE)
+
+#######################
+#######################
+
+pal <- colorFactor(
+  palette = 'Dark2',
+  domain = dados$cluster
+)
+
+leaflet(dados) %>%
+  addTiles(group="OSM") %>% 
+  addCircles(~V1, ~V2, weight = 0.1, radius=30, color=~pal(cluster),
+             stroke = TRUE, fillOpacity = 0.8) %>% 
+  addLegend("topright", colors= "blue", labels=paste("alvaras", sep = " "), title="Cluster")
+
 meucluster(1)
 
 meucluster(5)

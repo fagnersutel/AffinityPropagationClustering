@@ -83,3 +83,18 @@ leaflet(dados) %>%
   addCircles(~V1, ~V2, weight = 0.1, radius=30, color=~pal(cluster),
              stroke = TRUE, fillOpacity = 0.8) %>% 
   addLegend("topright", colors= "blue", labels=paste("com", tamanho, "alvaras", sep = " "), title="Cluster")
+
+
+#######################
+#######################
+
+pal <- colorFactor(
+  palette = 'Dark2',
+  domain = dados$cluster
+)
+
+leaflet(dados) %>%
+  addTiles(group="OSM") %>% 
+  addCircles(~V1, ~V2, weight = 0.1, radius=30, color=~pal(cluster),
+             stroke = TRUE, fillOpacity = 0.8) %>% 
+  addLegend("topright", colors= "blue", labels=paste("alvaras", sep = " "), title="Cluster")
