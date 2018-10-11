@@ -26,11 +26,11 @@ x2 <- x2[complete.cases(x2), ]
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 3000), ]
+x2 <- x2[sample(nrow(x2), 9000), ]
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
-apres <- apcluster(negDistMat(r=2), x2)
+apres <- apcluster(negDistMat(r=2), x2, q=0.55)
 plot(apres, x2)
 summary(apres)
 
@@ -82,9 +82,9 @@ meucluster <- function(cluster) {
     addTiles(group="OSM") %>% 
     addCircles(~V1, ~V2, weight = 0.1, radius=8, color= 'blue',
                stroke = TRUE, fillOpacity = 0.8) %>% 
-    addLegend("topright", colors= "blue", labels=paste("Cluster:", cluster, ", com", tamanho, "alvarás", sep = " "), title="Cluster")
+    addLegend("topright", colors= "blue", labels=paste("Cluster:", cluster, ", com", tamanho, "alvar?s", sep = " "), title="Cluster")
 }
-
+meucluster(1)
 save(dados, file = "clusters_q07_94clusters.rda")
 write.csv(dados, "clusters_q07_94clusters.csv", row.names=FALSE)
 
@@ -102,137 +102,3 @@ leaflet(dados) %>%
              stroke = TRUE, fillOpacity = 0.8) %>% 
   addLegend("topright", colors= "blue", labels=paste("alvaras", sep = " "), title="Cluster")
 
-meucluster(1)
-
-meucluster(5)
-
-meucluster(c(1,2,3))
-meucluster(4)
-
-meucluster(11)
-
-meucluster(18)
-
-meucluster(22)
-
-meucluster(29)
-
-meucluster(41)
-
-meucluster(45)
-meucluster(c(41,45))
-
-meucluster(44)
-
-meucluster(46)
-
-
-meucluster(39)
-meucluster(50)
-meucluster(42)
-meucluster(c(39,42,50))
-
-
-
-a = 0
-meucluster((a=a+1))
-
-df2 = data.frame()
-meucluster <- function(cluster) {
-  tamanho = length(unique(cluster))
-  df2 = data.frame(color = topo.colors(tamanho, alpha = NULL), stringsAsFactors = FALSE)
-  dadosc = dados[dados$cluster == cluster,]
-  leaflet(dadosc) %>%
-    addTiles(group="OSM") %>% 
-    addCircles(~V1, ~V2, weight = 0.1, radius=1, color=~cluster,
-               stroke = TRUE, fillOpacity = 0.8) %>% 
-    addLegend("bottomright", colors= "red", labels="Porto Alegre", title="Clusters")
-}
-
-
-cluster = c(1:3)
-
-tamanho = length(unique(cluster))
-tamanho
-df2 = data.frame(color = topo.colors(tamanho, alpha = NULL), stringsAsFactors = FALSE)
-df2
-dadosc = dados[dados$cluster == cluster,]
-leaflet(dadosc) %>%
-  addTiles(group="OSM") %>% 
-  addCircles(~V1, ~V2, weight = 0.1, radius=10, color=c('red', 'blue', 'green'),
-             stroke = TRUE, fillOpacity = 0.8) %>% 
-  addLegend("bottomright", colors= "red", labels="Porto Alegre", title="Clusters")
-
-
-
-
-
-
-load(file = "apres.rda")
-dados = read.csv('clusters_q07_94clusters.csv', header = TRUE, sep = ",")
-head(dados)
-x2 <- cbind(dados$V1, dados$V2)
-x2 <- x2[complete.cases(x2), ]
-head(x2)
-#x1 <- x2[1:5000,]
-x1 <- x2
-x2 <- x2[sample(nrow(x2), 5000), ]
-dim(x1)
-dim(x2)
-plot(apres, x1)
-
-###################
-###################
-###################
-###################
-
-
-x2 <- cbind(dados$V1, dados$V2)
-x2 <- x2[complete.cases(x2), ]
-head(x2)
-#x1 <- x2[1:5000,]
-x1 <- x2
-x2 <- x2[sample(nrow(x2), 3000), ]
-dim(x1)
-dim(x2)
-plot(x2, xlab="", ylab="", pch=19, cex=0.2)
-apres2a <- apcluster(negDistMat(r=2), x2)
-plot(apres2a, x2)
-heatmap(apres2a)
-apres2b <- apcluster(negDistMat(r=2), x2, q=0)
-plot(apres2b, x2)
-apres2c <- apcluster(negDistMat(r=2), x2, q=0.8)
-plot(apres2c, x2)
-apres2c@p     
-heatmap(apres2c)  
-setwd("/Users/fagnersuteldemoura/r-files/aae/")
-save(apres2a, file = "mydata.rda")
-load(file = "mydata.rda")
-plot(apres2a, x2)
-
-
-
-
-#Standart normal have variance 1; means of n standart normal have standart deviation 1/sqrt(n)
-nosim = 1000
-n = 10
-matriz =matrix(rnorm(nosim * n), nosim)
-dim(matriz)
-head(matriz)
-media = apply(matriz, 1, mean)
-media
-length(media)
-sd(media)
-1/sqrt(10)
-
-#Standart uniforms have bariance 1/12; means of randon samples of n uniforms have sd 1/sqrt(12 * n)
-nosim = 1000
-n = 10
-matriz =matrix(runif(nosim * n), nosim)
-dim(matriz)
-head(matriz)
-media = apply(matriz, 1, mean)
-media
-length(media)
-sd(media)
-1/sqrt(12 * n)
