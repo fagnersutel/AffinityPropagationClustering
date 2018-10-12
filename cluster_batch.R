@@ -2,15 +2,8 @@ rm(list = ls(all.names = TRUE))
 library(leaflet.extras)
 library(apcluster)
 load(file = "apres2.rda")
-dados = read.csv('clusters_q07_94clusters2.csv', header = TRUE, sep = ",")
-head(dados)
-x2 <- cbind(dados$V1, dados$V2)
-x2 <- x2[complete.cases(x2), ]
+load(file = "x2-13000.rda")
 head(x2)
-x1 <- x2[1:5000,]
-x1 <- x2
-x2 <- x2[sample(nrow(x2), 5000), ]
-dim(x1)
 dim(x2)
 plot(apres, x2)
 
@@ -21,6 +14,25 @@ predict.apcluster <- function(s, exemplars, newdata)
   unname(apply(simMat, 2, which.max))
 }
 resultado <- list()
+
+setwd("~/r-files/AffinityPropagationClustering/")
+filenames <- list.files(path = "~/r-files/AffinityPropagationClustering/geo/") 
+filenames
+setwd("~/r-files/AffinityPropagationClustering/geo/") 
+data <- do.call("rbind", lapply(filenames, read.csv, header = TRUE, sep = ";")) 
+setwd("~/r-files/AffinityPropagationClustering/")
+head(data)
+names(data)
+dados <- cbind(data$long, data$lat, as.character(data$default), as.character(data$tipo))
+dados <- as.data.frame(dados)
+dados$V1 <- as.numeric(as.character(dados$V1))
+dados$V2 <- as.numeric(as.character(dados$V2))
+dados <- dados[dados$V2 < 0, ]
+dados <- subset(dados, !is.na(V1))
+dim(dados)
+dados$newrow <- sample(1000, size = nrow(dados), replace = TRUE)
+dados$cut <- cut(dados$newrow, breaks=seq(0,1000,200), labels=sprintf("Score %d-%d",seq(0, 800, 200), seq(200,1000,200)))
+
 
 dados$cluster = 0
 head(dados)
@@ -57,9 +69,6 @@ meucluster <- function(cluster) {
  
 }
 
-meucluster(1)
-meucluster(5)
-meucluster(c(1,2,3))
 a = 0
 meucluster((a=a+1))
 
@@ -82,7 +91,7 @@ leaflet(dados) %>%
   addTiles(group="OSM") %>% 
   addCircles(~V1, ~V2, weight = 0.1, radius=30, color=~pal(cluster),
              stroke = TRUE, fillOpacity = 0.8) %>% 
-  addLegend("topright", colors= "blue", labels=paste("com", tamanho, "alvaras", sep = " "), title="Cluster")
+  addLegend("topright", colors= "blue", labels=paste("Alvaras"), title="Cluster")
 
 
 #######################

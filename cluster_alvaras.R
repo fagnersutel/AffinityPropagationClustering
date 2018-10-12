@@ -26,7 +26,8 @@ x2 <- x2[complete.cases(x2), ]
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 9000), ]
+x2 <- x2[sample(nrow(x2), 12000), ]
+save(x2, file = "x2-13000.rda")
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
@@ -37,7 +38,7 @@ summary(apres)
 save(apres, file = "apres2.rda")
 #load(file = "apres.rda")
 #plot(apres, x2)
-
+0  
 
 predict.apcluster <- function(s, exemplars, newdata)
 {
@@ -85,8 +86,8 @@ meucluster <- function(cluster) {
     addLegend("topright", colors= "blue", labels=paste("Cluster:", cluster, ", com", tamanho, "alvar?s", sep = " "), title="Cluster")
 }
 meucluster(1)
-save(dados, file = "clusters_q07_94clusters.rda")
-write.csv(dados, "clusters_q07_94clusters.csv", row.names=FALSE)
+save(dados, file = "clusters_q06_13000clusters.rda")
+#write.csv(dados, "clusters_q07_94clusters.csv", row.names=FALSE)
 
 #######################
 #######################
