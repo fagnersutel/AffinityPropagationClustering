@@ -32,8 +32,8 @@ dim(x2)
 head(x2)
 #x1 <- x2[1:5000,]
 x1 <- x2
-x2 <- x2[sample(nrow(x2), 50000), ]
-save(x2, file = "x2-50000.rda")
+x2 <- x2[sample(nrow(x2), 25000), ]
+save(x2, file = "x2-25000.rda")
 dim(x1)
 dim(x2)
 #apres <- apcluster(negDistMat(r=2), x2, q=0)
